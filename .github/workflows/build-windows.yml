@@ -1,0 +1,35 @@
+
+name: Build ChatGPTLauncher EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Завантажити код
+        uses: actions/checkout@v4
+
+      - name: Встановити Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Встановити бібліотеки
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install minecraft-launcher-lib pyinstaller
+
+      - name: Створити EXE
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed --name ChatGPTLauncher launcher.py
+
+      - name: Зберегти EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChatGPTLauncher-Windows
+          path: dist/ChatGPTLauncher.exe
